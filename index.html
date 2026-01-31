@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mind Healer - Psychologist Game</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="puzzles.css">
+</head>
+
+<body>
+    <!-- Loading Screen -->
+    <div id="loading-screen">
+        <div class="loading-content">
+            <h1>🧠 Mind Healer</h1>
+            <div class="loading-spinner"></div>
+            <p>Chargement du monde intérieur...</p>
+        </div>
+    </div>
+
+    <!-- Game Canvas -->
+    <canvas id="game-canvas"></canvas>
+
+    <!-- Game UI Overlay -->
+    <div id="game-ui">
+        <!-- Title Screen -->
+        <div id="title-screen" class="screen active">
+            <h1 class="game-title">🧠 Mind Healer</h1>
+            <p class="game-subtitle">Guérissez les souvenirs, libérez l'esprit</p>
+            <button id="start-btn" class="btn-primary">Commencer</button>
+            <div class="story-hint">
+                <p>Vous êtes un psychologue spécial avec le pouvoir d'entrer dans l'esprit des patients.</p>
+                <p>Aujourd'hui, un chanteur déprimé a besoin de votre aide...</p>
+            </div>
+        </div>
+
+        <!-- HUD (In-game UI) -->
+        <div id="hud" class="screen">
+            <div class="hud-top">
+                <div id="scene-title" class="scene-title"></div>
+                <div id="memory-counter" class="memory-counter">
+                    <span class="icon">✨</span>
+                    <span id="memories-healed">0</span> / <span id="total-memories">0</span>
+                </div>
+            </div>
+
+            <div id="instruction-box" class="instruction-box">
+                <p id="instruction-text">Cliquez pour commencer...</p>
+            </div>
+
+            <div id="dialogue-box" class="dialogue-box hidden">
+                <div class="dialogue-avatar"></div>
+                <div class="dialogue-content">
+                    <p id="dialogue-speaker" class="dialogue-speaker"></p>
+                    <p id="dialogue-text" class="dialogue-text"></p>
+                </div>
+                <button id="dialogue-next" class="btn-dialogue">Continuer</button>
+            </div>
+
+            <!-- Brain World Controls -->
+            <div id="brain-controls" class="brain-controls hidden">
+                <p>🎯 WASD - Déplacer | Souris - Regarder | Clic - Transformer</p>
+            </div>
+        </div>
+
+        <!-- Game Over Screen -->
+        <div id="game-over-screen" class="screen">
+            <h1 class="victory-title">🎉 Mission Accomplie !</h1>
+            <div class="victory-content">
+                <p class="victory-message">Vous avez guéri tous les souvenirs du patient.</p>
+                <p class="victory-subtitle">Le chanteur a retrouvé sa joie de vivre ! 🎵</p>
+                <div class="stats">
+                    <div class="stat-item">
+                        <span class="stat-label">Souvenirs guéris</span>
+                        <span class="stat-value" id="final-score">0</span>
+                    </div>
+                </div>
+                <button id="replay-btn" class="btn-primary">Rejouer</button>
+            </div>
+        </div>
+
+        <!-- Puzzle Overlay -->
+        <div id="puzzle-overlay" class="puzzle-overlay">
+            <div class="puzzle-modal">
+                <div class="puzzle-header">
+                    <h2 id="puzzle-title">Réparer le souvenir</h2>
+                    <p id="puzzle-description" class="puzzle-desc"></p>
+                </div>
+                <div id="puzzle-container" class="puzzle-content">
+                    <!-- Puzzle content loaded dynamically -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Three.js Library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+
+    <!-- Game Scripts -->
+    <script src="utils/gameState.js"></script>
+    <script src="utils/animations.js"></script>
+    <script src="utils/audio.js"></script>
+    <script src="utils/models.js"></script>
+
+    <!-- Puzzle Scripts -->
+    <script src="puzzles/puzzleSystem.js"></script>
+    <script src="puzzles/reconstructionPuzzle.js"></script>
+    <script src="puzzles/rhythmPuzzle.js"></script>
+    <script src="puzzles/memoryPuzzle.js"></script>
+
+    <script src="scenes/waitingRoom.js"></script>
+    <script src="scenes/doctorOffice.js"></script>
+    <script src="scenes/brainWorld.js"></script>
+    <script src="scenes/endingScene.js"></script>
+    <script src="game.js"></script>
+</body>
+
+</html>

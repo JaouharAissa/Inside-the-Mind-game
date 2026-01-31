@@ -1,0 +1,926 @@
+/* ===== CSS Reset & Base Styles ===== */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+:root {
+    /* Color Palette */
+    --bg-dark: #0a0e27;
+    --bg-darker: #050814;
+    --primary: #6366f1;
+    --primary-light: #818cf8;
+    --primary-dark: #4f46e5;
+    --accent: #a78bfa;
+    --accent-bright: #c4b5fd;
+    --success: #10b981;
+    --warning: #f59e0b;
+    --text-light: #f9fafb;
+    --text-muted: #9ca3af;
+    --glass-bg: rgba(15, 23, 42, 0.7);
+    --glass-border: rgba(148, 163, 184, 0.1);
+
+    /* Fonts */
+    --font-main: 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', sans-serif;
+    --font-display: 'Georgia', serif;
+
+    /* Shadows */
+    --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.3);
+    --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.4);
+    --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.5);
+    --shadow-glow: 0 0 40px rgba(99, 102, 241, 0.5);
+}
+
+body {
+    font-family: var(--font-main);
+    background: var(--bg-darker);
+    color: var(--text-light);
+    overflow: hidden;
+    height: 100vh;
+    width: 100vw;
+}
+
+/* ===== Canvas ===== */
+#game-canvas {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: block;
+    cursor: pointer;
+}
+
+#game-canvas.magic-cursor {
+    cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32"><text y="28" font-size="28">✨</text></svg>'), auto;
+}
+
+/* ===== Loading Screen ===== */
+#loading-screen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, var(--bg-darker) 0%, var(--bg-dark) 100%);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+    transition: opacity 0.5s ease;
+}
+
+#loading-screen.hidden {
+    opacity: 0;
+    pointer-events: none;
+}
+
+.loading-content {
+    text-align: center;
+}
+
+.loading-content h1 {
+    font-size: 3.5rem;
+    font-family: var(--font-display);
+    margin-bottom: 2rem;
+    background: linear-gradient(135deg, var(--primary-light) 0%, var(--accent-bright) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.loading-spinner {
+    width: 60px;
+    height: 60px;
+    margin: 0 auto 1.5rem;
+    border: 4px solid var(--glass-border);
+    border-top: 4px solid var(--primary);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.loading-content p {
+    color: var(--text-muted);
+    font-size: 1rem;
+}
+
+/* ===== Game UI Overlay ===== */
+#game-ui {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 100;
+}
+
+#game-ui * {
+    pointer-events: auto;
+}
+
+/* ===== Screen System ===== */
+.screen {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: none;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    opacity: 0;
+    transition: opacity 0.5s ease;
+}
+
+.screen.active {
+    display: flex;
+    opacity: 1;
+}
+
+/* ===== Title Screen ===== */
+#title-screen {
+    background: linear-gradient(135deg, rgba(10, 14, 39, 0.95) 0%, rgba(5, 8, 20, 0.98) 100%);
+    backdrop-filter: blur(10px);
+}
+
+.game-title {
+    font-size: 5rem;
+    font-family: var(--font-display);
+    margin-bottom: 1rem;
+    background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    text-shadow: var(--shadow-glow);
+    animation: pulse 3s ease-in-out infinite;
+}
+
+@keyframes pulse {
+
+    0%,
+    100% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.05);
+    }
+}
+
+.game-subtitle {
+    font-size: 1.5rem;
+    color: var(--text-muted);
+    margin-bottom: 3rem;
+    font-style: italic;
+}
+
+.story-hint {
+    max-width: 600px;
+    text-align: center;
+    margin-top: 3rem;
+    padding: 2rem;
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    border-radius: 16px;
+    backdrop-filter: blur(20px);
+}
+
+.story-hint p {
+    margin-bottom: 1rem;
+    line-height: 1.6;
+    color: var(--text-muted);
+}
+
+.story-hint p:last-child {
+    margin-bottom: 0;
+}
+
+/* ===== Buttons ===== */
+.btn-primary {
+    padding: 1rem 3rem;
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: white;
+    background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+    border: none;
+    border-radius: 12px;
+    cursor: pointer;
+    box-shadow: var(--shadow-md);
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-lg), var(--shadow-glow);
+    background: linear-gradient(135deg, var(--primary-light) 0%, var(--primary) 100%);
+}
+
+.btn-primary:active {
+    transform: translateY(0);
+}
+
+/* ===== HUD (Heads-Up Display) ===== */
+#hud {
+    display: flex;
+    pointer-events: none;
+}
+
+#hud.active {
+    display: flex;
+}
+
+.hud-top {
+    position: absolute;
+    top: 2rem;
+    left: 0;
+    right: 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    padding: 0 2rem;
+    gap: 2rem;
+}
+
+.scene-title {
+    font-size: 2rem;
+    font-weight: 600;
+    color: var(--text-light);
+    text-shadow: var(--shadow-md);
+    padding: 1rem 2rem;
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    border-radius: 12px;
+    backdrop-filter: blur(20px);
+}
+
+.memory-counter {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    font-size: 1.5rem;
+    font-weight: 700;
+    padding: 1rem 2rem;
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    border-radius: 12px;
+    backdrop-filter: blur(20px);
+    box-shadow: var(--shadow-sm);
+}
+
+.memory-counter .icon {
+    font-size: 2rem;
+    animation: float 2s ease-in-out infinite;
+}
+
+@keyframes float {
+
+    0%,
+    100% {
+        transform: translateY(0);
+    }
+
+    50% {
+        transform: translateY(-5px);
+    }
+}
+
+.memory-counter.hidden {
+    display: none;
+}
+
+/* ===== Instructions ===== */
+.instruction-box {
+    position: absolute;
+    bottom: 3rem;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 1.5rem 3rem;
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    border-radius: 16px;
+    backdrop-filter: blur(20px);
+    box-shadow: var(--shadow-md);
+    text-align: center;
+    max-width: 80%;
+}
+
+.instruction-box p {
+    font-size: 1.1rem;
+    line-height: 1.6;
+    color: var(--text-light);
+    margin: 0;
+}
+
+.instruction-box.hidden {
+    display: none;
+}
+
+/* ===== Dialogue Box ===== */
+.dialogue-box {
+    position: absolute;
+    bottom: 2rem;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 90%;
+    max-width: 700px;
+    padding: 2rem;
+    background: var(--glass-bg);
+    border: 2px solid var(--glass-border);
+    border-radius: 20px;
+    backdrop-filter: blur(30px);
+    box-shadow: var(--shadow-lg);
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+}
+
+.dialogue-box.hidden {
+    display: none;
+}
+
+.dialogue-avatar {
+    width: 60px;
+    height: 60px;
+    background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+.dialogue-content {
+    flex: 1;
+}
+
+.dialogue-speaker {
+    font-weight: 700;
+    color: var(--primary-light);
+    margin-bottom: 0.5rem;
+    font-size: 1.1rem;
+}
+
+.dialogue-text {
+    color: var(--text-light);
+    line-height: 1.6;
+    font-size: 1rem;
+}
+
+.btn-dialogue {
+    padding: 0.75rem 1.5rem;
+    background: var(--primary);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: all 0.2s ease;
+    flex-shrink: 0;
+}
+
+.btn-dialogue:hover {
+    background: var(--primary-light);
+    transform: scale(1.05);
+}
+
+/* ===== Brain Controls ===== */
+.brain-controls {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    padding: 1.5rem 2.5rem;
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    border-radius: 16px;
+    backdrop-filter: blur(20px);
+    text-align: center;
+    font-size: 1.1rem;
+    font-weight: 600;
+    animation: fadeInOut 4s ease forwards;
+}
+
+@keyframes fadeInOut {
+    0% {
+        opacity: 0;
+    }
+
+    20% {
+        opacity: 1;
+    }
+
+    80% {
+        opacity: 1;
+    }
+
+    100% {
+        opacity: 0;
+        display: none;
+    }
+}
+
+.brain-controls.hidden {
+    display: none;
+}
+
+/* ===== Game Over Screen ===== */
+#game-over-screen {
+    background: linear-gradient(135deg, rgba(10, 14, 39, 0.95) 0%, rgba(5, 8, 20, 0.98) 100%);
+    backdrop-filter: blur(10px);
+}
+
+.victory-title {
+    font-size: 4rem;
+    margin-bottom: 2rem;
+    background: linear-gradient(135deg, var(--success) 0%, var(--accent-bright) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    animation: victoryPulse 2s ease-in-out infinite;
+}
+
+@keyframes victoryPulse {
+
+    0%,
+    100% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.1);
+    }
+}
+
+.victory-content {
+    text-align: center;
+    max-width: 600px;
+}
+
+.victory-message {
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+    color: var(--text-light);
+}
+
+.victory-subtitle {
+    font-size: 1.25rem;
+    margin-bottom: 3rem;
+    color: var(--text-muted);
+}
+
+.stats {
+    display: flex;
+    justify-content: center;
+    gap: 3rem;
+    margin-bottom: 3rem;
+    padding: 2rem;
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    border-radius: 16px;
+    backdrop-filter: blur(20px);
+}
+
+.stat-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.stat-label {
+    font-size: 1rem;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.stat-value {
+    font-size: 3rem;
+    font-weight: 700;
+    background: linear-gradient(135deg, var(--success) 0%, var(--accent) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+/* ===== Responsive Design ===== */
+@media (max-width: 768px) {
+    .game-title {
+        font-size: 3rem;
+    }
+
+    .scene-title {
+        font-size: 1.5rem;
+        padding: 0.75rem 1.5rem;
+    }
+
+    .memory-counter {
+        font-size: 1.2rem;
+        padding: 0.75rem 1.5rem;
+    }
+
+    .dialogue-box {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .victory-title {
+        font-size: 2.5rem;
+    }
+}
+
+/* ===== Utility Classes ===== */
+.hidden {
+    display: none !important;
+}
+
+.fade-in {
+    animation: fadeIn 0.5s ease;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+.slide-up {
+    animation: slideUp 0.5s ease;
+}
+
+@keyframes slideUp {
+    from {
+        transform: translateY(50px);
+        opacity: 0;
+    }
+
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+/* ===== Puzzle Overlay System ===== */
+#puzzle-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.85);
+    backdrop-filter: blur(10px);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+#puzzle-overlay.active {
+    display: flex;
+    opacity: 1;
+}
+
+.puzzle-wrapper {
+    background: var(--glass-bg);
+    border: 2px solid var(--glass-border);
+    border-radius: 24px;
+    padding: 2rem;
+    max-width: 900px;
+    width: 90%;
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: var(--shadow-lg);
+    backdrop-filter: blur(30px);
+}
+
+.puzzle-header {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+#puzzle-title {
+    font-size: 2rem;
+    font-weight: 700;
+    background: linear-gradient(135deg, var(--primary-light) 0%, var(--accent-bright) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 0.5rem;
+}
+
+#puzzle-description {
+    color: var(--text-muted);
+    font-size: 1rem;
+}
+
+#puzzle-container {
+    min-height: 400px;
+}
+
+.puzzle-close {
+    position: absolute;
+    top: 1.5rem;
+    right: 1.5rem;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    color: var(--text-light);
+    font-size: 1.5rem;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: all 0.2s ease;
+}
+
+.puzzle-close:hover {
+    background: var(--primary);
+    transform: scale(1.1);
+}
+
+/* ===== Reconstruction Puzzle ===== */
+.reconstruction-puzzle {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.puzzle-progress {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+}
+
+.progress-bar {
+    width: 100%;
+    height: 24px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    overflow: hidden;
+    border: 1px solid var(--glass-border);
+}
+
+.progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--primary) 0%, var(--accent) 100%);
+    transition: width 0.5s ease;
+    border-radius: 12px;
+}
+
+.progress-text {
+    text-align: center;
+    font-weight: 600;
+    color: var(--text-light);
+}
+
+.puzzle-main {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 2rem;
+    align-items: start;
+}
+
+.reconstruction-area {
+    position: relative;
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 16px;
+    padding: 2rem;
+    border: 2px dashed var(--glass-border);
+    min-height: 500px;
+}
+
+.guitar-outline {
+    width: 100%;
+    height: auto;
+    pointer-events: none;
+}
+
+.drop-zones {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    padding: 2rem;
+}
+
+.drop-zone {
+    position: absolute;
+    border: 3px dashed var(--primary);
+    border-radius: 12px;
+    background: rgba(99, 102, 241, 0.1);
+    transition: all 0.3s ease;
+    opacity: 0.6;
+}
+
+.drop-zone.drag-over {
+    background: rgba(99, 102, 241, 0.3);
+    border-color: var(--accent-bright);
+    opacity: 1;
+    transform: scale(1.05);
+    box-shadow: 0 0 20px rgba(99, 102, 241, 0.5);
+}
+
+.pieces-tray {
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 16px;
+    padding: 1.5rem;
+    border: 2px solid var(--glass-border);
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    min-height: 500px;
+}
+
+.pieces-tray .hint {
+    text-align: center;
+    color: var(--text-muted);
+    font-size: 0.9rem;
+    margin-bottom: 0.5rem;
+    padding: 0.75rem;
+    background: rgba(99, 102, 241, 0.1);
+    border-radius: 8px;
+}
+
+.puzzle-piece {
+    width: 80px;
+    height: 80px;
+    border-radius: 12px;
+    cursor: grab;
+    transition: all 0.3s ease;
+    box-shadow: var(--shadow-md);
+    border: 3px solid rgba(255, 255, 255, 0.2);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 2rem;
+    position: relative;
+}
+
+.puzzle-piece:hover {
+    transform: scale(1.1) rotate(0deg) !important;
+    box-shadow: var(--shadow-lg);
+    border-color: rgba(255, 255, 255, 0.4);
+    z-index: 10;
+}
+
+.puzzle-piece:active {
+    cursor: grabbing;
+}
+
+.puzzle-piece.dragging {
+    opacity: 0.5;
+    cursor: grabbing;
+}
+
+.puzzle-piece.placed {
+    cursor: default;
+    border-color: var(--success);
+    box-shadow: 0 0 20px rgba(16, 185, 129, 0.5);
+    animation: placeSuccess 0.5s ease;
+}
+
+@keyframes placeSuccess {
+    0% {
+        transform: scale(0.8) rotate(0deg);
+    }
+
+    50% {
+        transform: scale(1.2) rotate(5deg);
+    }
+
+    100% {
+        transform: scale(1) rotate(0deg);
+    }
+}
+
+.puzzle-piece.shake {
+    animation: shake 0.5s ease;
+}
+
+@keyframes shake {
+
+    0%,
+    100% {
+        transform: translateX(0) rotate(0deg);
+    }
+
+    25% {
+        transform: translateX(-10px) rotate(-5deg);
+    }
+
+    75% {
+        transform: translateX(10px) rotate(5deg);
+    }
+}
+
+/* ===== Puzzle Completion ===== */
+.puzzle-complete {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 1.5rem;
+    padding: 3rem;
+    text-align: center;
+    animation: completionAppear 0.6s ease;
+}
+
+@keyframes completionAppear {
+    from {
+        opacity: 0;
+        transform: scale(0.8);
+    }
+
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+.success-icon {
+    font-size: 5rem;
+    animation: successPulse 1s ease infinite;
+}
+
+@keyframes successPulse {
+
+    0%,
+    100% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.2);
+    }
+}
+
+.puzzle-complete h2 {
+    font-size: 2.5rem;
+    background: linear-gradient(135deg, var(--success) 0%, var(--accent-bright) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin: 0;
+}
+
+.puzzle-complete p {
+    font-size: 1.25rem;
+    color: var(--text-muted);
+    margin: 0;
+}
+
+/* ===== Responsive Puzzle Design ===== */
+@media (max-width: 768px) {
+    .puzzle-wrapper {
+        padding: 1rem;
+        width: 95%;
+    }
+
+    #puzzle-title {
+        font-size: 1.5rem;
+    }
+
+    .puzzle-main {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+
+    .reconstruction-area {
+        min-height: 400px;
+        padding: 1rem;
+    }
+
+    .pieces-tray {
+        flex-direction: row;
+        flex-wrap: wrap;
+        min-height: auto;
+        justify-content: center;
+    }
+
+    .puzzle-piece {
+        width: 70px;
+        height: 70px;
+    }
+
+    .puzzle-complete h2 {
+        font-size: 2rem;
+    }
+}
