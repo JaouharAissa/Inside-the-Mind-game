@@ -73,20 +73,3 @@ game/
 ## 🎯 Objectif du Jeu
 
 Guérir les 6 souvenirs traumatiques du patient chanteur pour lui rendre sa passion pour la musique et sa joie de vivre.
-
-## 🔧 Dépannage
-
-**Le jeu ne se charge pas ?**
-- Vérifiez que vous avez une connexion Internet (pour charger Three.js depuis le CDN)
-- Utilisez un navigateur moderne (Chrome 90+, Firefox 88+, Edge 90+)
-- Ouvrez la console (F12) pour voir les erreurs éventuelles
-
-**Les contrôles ne fonctionnent pas ?**
-- Assurez-vous d'être dans la scène du cerveau
-- Cliquez sur le canvas de jeu pour donner le focus
-- Utilisez WASD (pas les flèches directionnelles)
-
-**Performance lente ?**
-- Fermez les autres onglets
-- Réduisez la taille de la fenêtre du navigateur
-- Vérifiez que votre GPU est activé dans les paramètres du navigateur
